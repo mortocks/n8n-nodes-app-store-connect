@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-app-store-connect.appStoreConnect",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://developer.apple.com/documentation/appstoreconnectapi/creating-api-keys-for-app-store-connect-api"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://developer.apple.com/documentation/appstoreconnectapi"
+			}
+		]
+	}
+}

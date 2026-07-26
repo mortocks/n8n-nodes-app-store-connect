@@ -1,0 +1,8 @@
+{
+  "name": "asc-node-screenshots",
+  "private": true,
+  "type": "module",
+  "description": "Playwright harness that screenshots each node's detail view + credential screens from a running n8n instance.",
+  "scripts": { "shoot": "node screenshot-nodes.mjs" },
+  "dependencies": { "playwright": "^1.48.0" }
+}

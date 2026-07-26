@@ -1,0 +1,49 @@
+name: Release
+
+# Publish to npm when a GitHub Release is published.
+# Flow: bump the version in package.json → create a GitHub Release whose tag is
+# `v<version>` (e.g. v0.2.0) → this workflow verifies + publishes.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # required for npm provenance
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Guard against publishing a package whose version doesn't match the tag.
+      - name: Verify package version matches the release tag
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "package.json = $PKG_VERSION | release tag = $TAG_VERSION"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::package.json version ($PKG_VERSION) does not match release tag ($TAG_VERSION). Bump package.json and re-tag."
+            exit 1
+          fi
+
+      # `npm publish` runs the `prepublishOnly` script (build && lint && test),
+      # so the package is re-verified before it leaves the runner.
+      # --access public keeps publishing explicit (harmless for an unscoped package).
+      # --provenance attaches a signed build-provenance attestation (needs the
+      # id-token permission above; remove both if this repo is private).
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

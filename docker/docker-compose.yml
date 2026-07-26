@@ -1,0 +1,50 @@
+# Runs a local n8n instance with n8n-nodes-app-store-connect loaded
+# as a community node (via the custom-extensions mechanism — see Dockerfile).
+#
+# Usage (from the repo root):
+#   npm run build            # produce dist/
+#   npm pack --pack-destination docker   # produce docker/*.tgz
+#   docker compose -f docker/docker-compose.yml up --build
+# Then open http://localhost:5678
+#
+# Data PERSISTS in the named volume `n8n_data` (mounted at /home/node/.n8n), so
+# your owner account, workflows and credentials survive `down`/`up` and rebuilds.
+# The package itself lives OUTSIDE that path (/home/node/n8n-custom-nodes, baked
+# into the image) so the volume can't shadow it. Reset to a clean instance with:
+#   docker compose -f docker/docker-compose.yml down -v      # -v removes the volume
+services:
+  n8n:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Pin to a known-good n8n version for reproducible UI/screenshots.
+        N8N_VERSION: ${N8N_VERSION:-2.31.4}
+    image: n8n-app-store-connect:local
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: "5678"
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://localhost:5678/
+      GENERIC_TIMEZONE: UTC
+      # Stable encryption key so persisted credentials stay decryptable across
+      # rebuilds. Dev-only default; override with a real secret via a .env file
+      # or the environment. If you change it, previously saved credentials in the
+      # volume can no longer be decrypted and must be re-entered.
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-asc-nodes-local-dev-encryption-key}
+      # Let the editor work over plain http on localhost.
+      N8N_SECURE_COOKIE: "false"
+      # Quieten first-run friction.
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      N8N_HIRING_BANNER_ENABLED: "false"
+      N8N_ONBOARDING_FLOW_DISABLED: "true"
+      # Avoid the task-runner deprecation nag on recent versions.
+      N8N_RUNNERS_ENABLED: "true"
+
+volumes:
+  n8n_data:

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: App Store Connect API documentation
+    url: https://developer.apple.com/documentation/appstoreconnectapi
+    about: Reference for the underlying Apple API this package wraps.
+  - name: n8n community nodes docs
+    url: https://docs.n8n.io/integrations/community-nodes/
+    about: How to install and use community nodes in n8n.

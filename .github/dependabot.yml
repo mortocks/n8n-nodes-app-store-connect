@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # npm dependencies (mostly devDependencies — this package ships no runtime deps).
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels: [dependencies]
+    groups:
+      # Batch routine dev-dependency bumps into one PR to reduce noise.
+      dev-dependencies:
+        dependency-type: development
+
+  # Keep the GitHub Actions in these workflows up to date.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: [dependencies, ci]

@@ -1,0 +1,7 @@
+# Code owners are auto-requested for review on PRs that touch matching paths.
+
+*  @mortocks
+
+# The two crypto paths are the highest-risk area — flag for extra scrutiny.
+/utils/ascToken.ts              @mortocks
+/utils/verifyWebhookSignature.ts @mortocks

@@ -1,0 +1,30 @@
+name: Feature request
+description: Request a new resource, operation, or capability
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: The workflow/automation you're trying to build.
+    validations:
+      required: true
+  - type: input
+    id: endpoint
+    attributes:
+      label: App Store Connect API endpoint(s)
+      description: If known, the ASC REST endpoint(s) involved.
+      placeholder: e.g. GET /v1/salesReports, POST /v1/inAppPurchases
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed resource / operation
+      placeholder: e.g. a "Sales Report" resource with a Get operation
+    validations:
+      required: true
+  - type: checkboxes
+    id: roadmap
+    attributes:
+      label: Roadmap
+      options:
+        - label: I checked `docs/roadmap.md` and this isn't already planned
