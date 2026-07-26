@@ -29,7 +29,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # --ignore-scripts skips compiling n8n-workflow's native transitive dep
+        # (isolated-vm) — it's only needed by n8n at runtime to sandbox
+        # expressions, not to build, lint, or test this package.
+        run: npm ci --ignore-scripts
 
       - name: Lint
         run: npm run lint
