@@ -20,3 +20,8 @@ docker/screenshots/debug/
 
 # Superpowers SDD scratch/process artifacts (task reports, review diffs)
 .superpowers/
+
+# This project standardizes on npm (package-lock.json) — guard against stray
+# lockfiles from other package managers.
+pnpm-lock.yaml
+yarn.lock
