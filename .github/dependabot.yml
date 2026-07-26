@@ -11,6 +11,23 @@ updates:
       # Batch routine dev-dependency bumps into one PR to reduce noise.
       dev-dependencies:
         dependency-type: development
+    # These majors are intentionally pinned for n8n toolchain compatibility
+    # (eslint plugin needs eslint 8; ts-jest needs jest 29; @types/node tracks
+    # the engines floor). Skip major bumps so Dependabot stops re-proposing them;
+    # minor/patch still flow.
+    ignore:
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@typescript-eslint/parser"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "jest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/jest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   # Keep the GitHub Actions in these workflows up to date.
   - package-ecosystem: github-actions
