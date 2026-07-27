@@ -5,6 +5,8 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 
+import { NodeConnectionTypes } from 'n8n-workflow';
+
 import {
 	ASC_SIGNATURE_HEADER,
 	verifyWebhookSignature,
@@ -36,8 +38,13 @@ export class VerifyWebhookSignature implements INodeType {
 		defaults: {
 			name: 'Verify Webhook Signature',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		// eslint-plugin-n8n-nodes-base@1.16.7 predates the `NodeConnectionTypes`
+		// rename and only recognises the `'main'` string literal; the n8n
+		// community-nodes verification scanner requires the typed enum instead.
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
+		inputs: [NodeConnectionTypes.Main],
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
+		outputs: [NodeConnectionTypes.Main],
 		usableAsTool: true,
 		credentials: [
 			{
