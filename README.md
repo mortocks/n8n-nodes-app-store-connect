@@ -1,9 +1,9 @@
 # n8n nodes for App Store Connect
 
-[![npm version](https://img.shields.io/npm/v/n8n-nodes-app-store-connect.svg)](https://www.npmjs.com/package/n8n-nodes-app-store-connect)
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-apple-appstore.svg)](https://www.npmjs.com/package/n8n-nodes-apple-appstore)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**`n8n-nodes-app-store-connect`** — [n8n](https://n8n.io) community nodes
+**`n8n-nodes-apple-appstore`** — [n8n](https://n8n.io) community nodes
 for the [Apple App Store Connect API](https://developer.apple.com/documentation/appstoreconnectapi).
 Automate TestFlight, builds, App Store versions, customer reviews, users, and
 webhooks — connect your credentials once and build workflows, no bespoke webhook
@@ -38,13 +38,13 @@ receivers or hand-rolled JWTs.
 From the n8n UI: **Settings → Community Nodes → Install**, and enter:
 
 ```
-n8n-nodes-app-store-connect
+n8n-nodes-apple-appstore
 ```
 
 Or on self-hosted n8n:
 
 ```bash
-npm install n8n-nodes-app-store-connect
+npm install n8n-nodes-apple-appstore
 ```
 
 **Compatibility:** Node.js ≥ 20.15; tested against n8n 2.31.x.

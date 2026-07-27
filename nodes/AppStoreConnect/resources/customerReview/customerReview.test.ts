@@ -32,7 +32,7 @@ import { customerReviewOperations } from './customerReview.resource';
 const FAKE_NODE = {
 	id: 'test-node',
 	name: 'App Store Connect',
-	type: 'n8n-nodes-app-store-connect.appStoreConnect',
+	type: 'n8n-nodes-apple-appstore.appStoreConnect',
 	typeVersion: 1,
 	position: [0, 0],
 	parameters: {},

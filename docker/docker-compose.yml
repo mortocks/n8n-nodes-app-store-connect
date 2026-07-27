@@ -1,4 +1,4 @@
-# Runs a local n8n instance with n8n-nodes-app-store-connect loaded
+# Runs a local n8n instance with n8n-nodes-apple-appstore loaded
 # as a community node (via the custom-extensions mechanism — see Dockerfile).
 #
 # Usage (from the repo root):

@@ -1,6 +1,6 @@
 # Local n8n harness + node screenshots
 
-Runs a local n8n instance with **n8n-nodes-app-store-connect** loaded,
+Runs a local n8n instance with **n8n-nodes-apple-appstore** loaded,
 and captures a screenshot of every node's detail view and every credential
 screen into [`../docs/nodes/screenshots/`](../docs/nodes/screenshots/).
 

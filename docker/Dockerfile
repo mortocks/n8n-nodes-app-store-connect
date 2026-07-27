@@ -1,4 +1,4 @@
-# n8n image with n8n-nodes-app-store-connect preloaded.
+# n8n image with n8n-nodes-apple-appstore preloaded.
 #
 # The package is installed into a custom-extensions directory that n8n scans on
 # startup (via N8N_CUSTOM_EXTENSIONS) and loads exactly like an installed
