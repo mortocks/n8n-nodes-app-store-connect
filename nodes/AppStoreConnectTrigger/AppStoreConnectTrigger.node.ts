@@ -159,12 +159,7 @@ export class AppStoreConnectTrigger implements INodeType {
 				},
 			},
 			{
-				// The webhook credential holds only the signing Secret — it is not an
-				// ASC API credential, so the `-Api` suffix convention does not apply
-				// (matches the credential class's own name; see
-				// `credentials/AppStoreConnectWebhook.credentials.ts`).
-				// eslint-disable-next-line n8n-nodes-base/node-class-description-credentials-name-unsuffixed
-				name: 'appStoreConnectWebhook',
+				name: 'appStoreConnectWebhookApi',
 				required: false,
 				// Only used when the Secret is sourced from a credential (the default).
 				displayOptions: {
@@ -371,7 +366,7 @@ export class AppStoreConnectTrigger implements INodeType {
 				const secretSource = this.getNodeParameter('secretSource', 'credential') as string;
 				let secret = '';
 				if (secretSource === 'credential') {
-					const credentials = await this.getCredentials('appStoreConnectWebhook');
+					const credentials = await this.getCredentials('appStoreConnectWebhookApi');
 					secret = (credentials.secret as string) ?? '';
 				} else {
 					secret = this.getNodeParameter('secret', '') as string;
@@ -472,7 +467,7 @@ export class AppStoreConnectTrigger implements INodeType {
 		const secretSource = this.getNodeParameter('secretSource', 'credential') as string;
 		let secret = '';
 		if (secretSource === 'credential') {
-			const credentials = await this.getCredentials('appStoreConnectWebhook');
+			const credentials = await this.getCredentials('appStoreConnectWebhookApi');
 			secret = (credentials?.secret as string | undefined) ?? '';
 		} else {
 			secret = this.getNodeParameter('secret', '') as string;
