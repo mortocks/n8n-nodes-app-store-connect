@@ -1,0 +1,31 @@
+{
+  "name": "App Store Connect — React to TestFlight crash feedback",
+  "nodes": [
+    {
+      "parameters": {
+        "events": ["BETA_FEEDBACK_CRASH_SUBMISSION_CREATED"]
+      },
+      "id": "b6e1e2a0-0000-4000-8000-000000000001",
+      "name": "On TestFlight Crash Feedback",
+      "type": "n8n-nodes-apple-appstore.appStoreConnectTrigger",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {},
+      "id": "b6e1e2a0-0000-4000-8000-000000000002",
+      "name": "Handle Event",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [880, 300]
+    }
+  ],
+  "connections": {
+    "On TestFlight Crash Feedback": {
+      "main": [[{ "node": "Handle Event", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}

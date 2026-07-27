@@ -153,6 +153,15 @@ HMAC-SHA256 of the **raw** request body keyed by the Secret.
 
 ---
 
+## Example workflows
+
+Importable examples live in [`workflows/`](workflows/):
+
+- **[React to TestFlight crash feedback](workflows/react-to-testflight-crash-feedback.json)** — the Trigger fires on each crash-feedback delivery.
+- **[Find 1-star App Store reviews](workflows/find-one-star-app-store-reviews.json)** — Customer Review → Get Many, filtered to 1-star, Simplify on.
+
+In n8n: **Workflows → ⋯ → Import from File**, then attach credentials and fill the placeholders. See [`workflows/README.md`](workflows/README.md).
+
 ## Contributing
 
 Contributions welcome — see **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full
@@ -176,7 +185,7 @@ npm run docker:refresh # rebuild + run a local n8n with the package preloaded
 - Doc-derived JSON:API type strings / filter keys are marked `⚠️` in code until
   confirmed against a live 2xx — please verify against a real account when you can.
 - Planned work and roadmap are tracked in
-  [GitHub Issues](https://github.com/mortocks/n8n-nodes-app-store-connect/issues).
+  [GitHub Issues](https://github.com/mortocks/n8n-nodes-apple-appstore/issues).
 - Conventions for contributors (and coding agents) live in [`AGENTS.md`](AGENTS.md).
 
 Open an issue with the templates provided, or a PR against `main` (CI runs lint +

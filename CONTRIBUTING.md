@@ -48,7 +48,7 @@ Reuse the shared helpers rather than reinventing: the app picker (`searchApps`),
 cursor pagination (`ascCursorPagination`), single/confirmation requests
 (`ascSingleRequest` / `ascConfirmationRequest`), the error mapper, the Query
 Options + Input Mode + Simplify + Sort field groups. Planned work is tracked in
-[GitHub Issues](https://github.com/mortocks/n8n-nodes-app-store-connect/issues).
+[GitHub Issues](https://github.com/mortocks/n8n-nodes-apple-appstore/issues).
 
 ## Testing conventions
 
