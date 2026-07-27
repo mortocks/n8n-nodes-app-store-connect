@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-apple-appstore",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "n8n community nodes for the Apple App Store Connect API — TestFlight, builds, App Store versions, customer reviews, users, and webhooks.",
   "keywords": [
     "n8n-community-node-package",
@@ -16,7 +16,7 @@
   "homepage": "https://github.com/mortocks/n8n-nodes-apple-appstore",
   "author": {
     "name": "Andrew Morton",
-    "email": "314196+mortocks@users.noreply.github.com",
+    "email": "royalty.pistils-2w@icloud.com",
     "url": "https://github.com/mortocks"
   },
   "repository": {
