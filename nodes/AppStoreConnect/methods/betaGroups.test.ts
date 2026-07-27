@@ -105,7 +105,7 @@ describe('searchBetaGroups', () => {
 
 	it('falls back to the id when the name is missing', async () => {
 		const { ctx } = makeCtx(async () => ({
-			data: [group('g1', 'Named'), { id: 'g2' }],
+			data: [group('g1', 'Named'), { id: 'G2' }],
 			links: { next: null },
 		}));
 
@@ -113,7 +113,7 @@ describe('searchBetaGroups', () => {
 
 		expect(result.results).toEqual([
 			{ name: 'Named', value: 'g1' },
-			{ name: 'g2', value: 'g2' }, // no attributes at all → id as label
+			{ name: 'G2', value: 'G2' }, // no attributes at all → id as label
 		]);
 	});
 
