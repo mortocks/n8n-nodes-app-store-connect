@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-apple-appstore",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "n8n community nodes for the Apple App Store Connect API — TestFlight, builds, App Store versions, customer reviews, users, and webhooks.",
   "keywords": [
     "n8n-community-node-package",
