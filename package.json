@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-app-store-connect",
+  "name": "n8n-nodes-apple-appstore",
   "version": "0.1.0",
   "description": "n8n community nodes for the Apple App Store Connect API (webhooks).",
   "keywords": [

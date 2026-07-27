@@ -4,7 +4,7 @@ Conventions for anyone — human or coding agent — working in this repo. This 
 the "rules of the road"; see [`CONTRIBUTING.md`](CONTRIBUTING.md) for setup and
 [`README.md`](README.md) for what the package does.
 
-`n8n-nodes-app-store-connect` is an **n8n community node package** for the Apple
+`n8n-nodes-apple-appstore` is an **n8n community node package** for the Apple
 App Store Connect API. Get it right by following the conventions below — the CI
 (lint + build + test on Node 20 & 22) and the test suite enforce most of them.
 

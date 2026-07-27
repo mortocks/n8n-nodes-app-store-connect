@@ -35,7 +35,7 @@ body:
     attributes:
       label: Versions
       description: Package version, n8n version, Node.js version
-      placeholder: e.g. n8n-nodes-app-store-connect 0.1.0, n8n 2.31.4, Node 20.15
+      placeholder: e.g. n8n-nodes-apple-appstore 0.1.0, n8n 2.31.4, Node 20.15
     validations:
       required: true
   - type: textarea

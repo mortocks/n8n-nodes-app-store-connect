@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to `n8n-nodes-app-store-connect` — n8n community
+Thanks for contributing to `n8n-nodes-apple-appstore` — n8n community
 nodes for the Apple App Store Connect API.
 
 ## Prerequisites

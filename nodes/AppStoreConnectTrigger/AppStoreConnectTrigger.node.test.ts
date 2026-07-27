@@ -23,7 +23,7 @@ import { AppStoreConnectTrigger } from './AppStoreConnectTrigger.node';
 const FAKE_NODE = {
 	id: 'trigger-node',
 	name: 'ASC Trigger',
-	type: 'n8n-nodes-app-store-connect.appStoreConnectTrigger',
+	type: 'n8n-nodes-apple-appstore.appStoreConnectTrigger',
 	typeVersion: 1,
 	position: [0, 0],
 	parameters: {},
