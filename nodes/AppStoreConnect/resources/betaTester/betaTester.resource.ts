@@ -141,10 +141,7 @@ export const betaTesterOperations: INodeProperties[] = [
 				},
 			},
 			{
-				// Sentence-case preposition to match "Add to Group" (title-case would
-				// force "Remove From Group", inconsistent with the "to" in Add).
-				// eslint-disable-next-line n8n-nodes-base/node-param-display-name-miscased
-				name: 'Remove from Group',
+				name: 'Remove From Group',
 				value: 'removeFromGroup',
 				action: 'Remove a beta tester from a group',
 				description: 'Unlink a beta tester from a beta group',

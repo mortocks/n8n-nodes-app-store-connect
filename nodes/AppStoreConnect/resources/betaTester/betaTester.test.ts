@@ -303,7 +303,7 @@ describe('betaTester operation wiring', () => {
 
 	it('Remove from Group DELETEs the linkage and confirms with { removed: true }', async () => {
 		const option = op('removeFromGroup');
-		expect(option.name).toBe('Remove from Group');
+		expect(option.name).toBe('Remove From Group');
 		const routing = option.routing;
 		expect(routing.request.method).toBe('DELETE');
 		expect(routing.request.url).toBe(
