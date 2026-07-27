@@ -22,6 +22,18 @@ Each issue is a vertical slice built by one subagent, following the patterns in
 **Backlog:** [07 — Tier 3/4 backlog](07-tier3-4-backlog.md) (IAP & Subscriptions,
 Pricing & Availability, Xcode Cloud, Analytics/Sales reports).
 
+**Verification hardening** (to pass `@n8n/scan-community-package` for the n8n
+verified-community-node program — do these **in order**, they share node/credential files):
+
+1. [verify-01 — Neutral SVG icons](verify-01-svg-icons.md)
+2. [verify-02 — NodeConnectionTypes](verify-02-node-connection-types.md)
+3. [verify-03 — Wrap raw re-throws in NodeApiError](verify-03-node-api-error.md)
+4. [verify-04 — Webhook credential compliance](verify-04-webhook-credential.md)
+5. [verify-05 — Author email, usableAsTool, title-case](verify-05-metadata-and-lint.md)
+
+After all merge: publish `0.1.2` via the release workflow and re-run
+`npx @n8n/scan-community-package n8n-nodes-apple-appstore` — it must be green.
+
 ## Definition of done — applies to EVERY issue
 
 These are mandatory for every slice (not repeated in full per file):
