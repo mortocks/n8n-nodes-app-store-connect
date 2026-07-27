@@ -53,7 +53,7 @@ async function ascHookRequest<T>(this: IHookFunctions, options: IHttpRequestOpti
 		if (readable) {
 			throw new NodeApiError(this.getNode(), error as JsonObject, { message: readable });
 		}
-		throw error;
+		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
 }
 

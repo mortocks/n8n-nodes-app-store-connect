@@ -25,6 +25,6 @@ export async function withAscErrorMapping<T>(
 		if (readable) {
 			throw new NodeApiError(context.getNode(), error as JsonObject, { message: readable });
 		}
-		throw error;
+		throw new NodeApiError(context.getNode(), error as JsonObject);
 	}
 }
