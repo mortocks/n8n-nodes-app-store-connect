@@ -15,6 +15,7 @@ import { formatAscErrorMessage } from '../../utils/ascErrorMapper';
 import { KNOWN_EVENT_TYPES, mergeEventTypes } from '../../utils/eventTypes';
 import { paginate } from '../../utils/pagination';
 import { ASC_SIGNATURE_HEADER } from '../../utils/verifyWebhookSignature';
+import { testWebhookSecret } from '../../utils/webhookCredentialTest';
 import { APP_RESOURCE_TYPE, searchApps } from '../AppStoreConnect/methods/apps';
 import { WEBHOOK_RESOURCE_TYPE } from '../AppStoreConnect/resources/webhook/webhook.constants';
 import { processWebhookRequest } from './processWebhookRequest';
@@ -165,6 +166,10 @@ export class AppStoreConnectTrigger implements INodeType {
 			{
 				name: 'appStoreConnectWebhookApi',
 				required: false,
+				// Test the secret via the shared credential test (see `methods`
+				// below). Every node using this credential must declare `testedBy`
+				// for the scanner's `credential-test-required` rule.
+				testedBy: 'appStoreConnectWebhookApiTest',
 				// Only used when the Secret is sourced from a credential (the default).
 				displayOptions: {
 					show: {
@@ -308,6 +313,11 @@ export class AppStoreConnectTrigger implements INodeType {
 	methods = {
 		listSearch: {
 			searchApps,
+		},
+		// Shared with the Verify node so both nodes that use the webhook
+		// credential test it (scanner `credential-test-required`).
+		credentialTest: {
+			appStoreConnectWebhookApiTest: testWebhookSecret,
 		},
 	};
 

@@ -1,8 +1,5 @@
 import type {
-	ICredentialTestFunctions,
-	ICredentialsDecrypted,
 	IExecuteFunctions,
-	INodeCredentialTestResult,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
@@ -14,6 +11,7 @@ import {
 	ASC_SIGNATURE_HEADER,
 	verifyWebhookSignature,
 } from '../../utils/verifyWebhookSignature';
+import { testWebhookSecret } from '../../utils/webhookCredentialTest';
 
 /**
  * `Verify Webhook Signature` node (programmatic).
@@ -127,35 +125,12 @@ export class VerifyWebhookSignature implements INodeType {
 		],
 	};
 
+	// Shared with the Trigger node (see `utils/webhookCredentialTest.ts`) so every
+	// node that uses the webhook credential tests it — required by the scanner's
+	// `credential-test-required` rule.
 	methods = {
 		credentialTest: {
-			/**
-			 * Validate the `App Store Connect Webhook API` credential.
-			 *
-			 * The credential is a bare shared secret with no API endpoint, so there
-			 * is nothing to authenticate against over the network. The most we can
-			 * meaningfully check is that a non-empty secret was provided; the actual
-			 * proof of correctness is a matching HMAC on a real delivery, which only
-			 * Apple can produce. Returning OK here keeps the credential testable (so
-			 * the verification scanner's `credential-test-required` rule is met)
-			 * without a bogus network call.
-			 */
-			async appStoreConnectWebhookApiTest(
-				this: ICredentialTestFunctions,
-				credential: ICredentialsDecrypted,
-			): Promise<INodeCredentialTestResult> {
-				const secret = credential.data?.secret;
-				if (typeof secret !== 'string' || secret.trim() === '') {
-					return {
-						status: 'Error',
-						message: 'Enter the shared webhook secret configured in App Store Connect.',
-					};
-				}
-				return {
-					status: 'OK',
-					message: 'Secret saved. It is verified against the HMAC on each incoming delivery.',
-				};
-			},
+			appStoreConnectWebhookApiTest: testWebhookSecret,
 		},
 	};
 
