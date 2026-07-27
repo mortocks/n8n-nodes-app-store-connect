@@ -51,7 +51,7 @@
     "n8nNodesApiVersion": 1,
     "credentials": [
       "dist/credentials/AppStoreConnectApi.credentials.js",
-      "dist/credentials/AppStoreConnectWebhook.credentials.js"
+      "dist/credentials/AppStoreConnectWebhookApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/AppStoreConnect/AppStoreConnect.node.js",

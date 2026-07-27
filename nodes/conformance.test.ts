@@ -6,7 +6,7 @@ import type {
 } from 'n8n-workflow';
 
 import { AppStoreConnectApi } from '../credentials/AppStoreConnectApi.credentials';
-import { AppStoreConnectWebhook } from '../credentials/AppStoreConnectWebhook.credentials';
+import { AppStoreConnectWebhookApi } from '../credentials/AppStoreConnectWebhookApi.credentials';
 import { AppStoreConnect } from './AppStoreConnect/AppStoreConnect.node';
 import { AppStoreConnectTrigger } from './AppStoreConnectTrigger/AppStoreConnectTrigger.node';
 import { VerifyWebhookSignature } from './VerifyWebhookSignature/VerifyWebhookSignature.node';
@@ -62,7 +62,7 @@ const NODES: Array<{ label: string; node: INodeType }> = [
 
 const CREDENTIALS: Array<{ label: string; cred: ICredentialType }> = [
 	{ label: 'AppStoreConnectApi', cred: new AppStoreConnectApi() },
-	{ label: 'AppStoreConnectWebhook', cred: new AppStoreConnectWebhook() },
+	{ label: 'AppStoreConnectWebhookApi', cred: new AppStoreConnectWebhookApi() },
 ];
 
 /** displayName must be Title Case-ish: start with a capital/digit, no snake_case. */
@@ -210,7 +210,7 @@ describe('credential secret masking', () => {
 	});
 
 	it('masks the webhook Secret', () => {
-		const secret = new AppStoreConnectWebhook().properties.find((p) => p.name === 'secret');
+		const secret = new AppStoreConnectWebhookApi().properties.find((p) => p.name === 'secret');
 		expect(secret).toBeDefined();
 		expect(secret?.typeOptions?.password).toBe(true);
 	});
