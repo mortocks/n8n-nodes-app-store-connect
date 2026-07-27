@@ -30,6 +30,11 @@ export class AppStoreConnectWebhook implements ICredentialType {
 	// eslint-disable-next-line n8n-nodes-base/cred-class-field-documentation-url-miscased
 	documentationUrl = 'https://developer.apple.com/documentation/appstoreconnectapi';
 
+	icon = {
+		light: 'file:../nodes/AppStoreConnect/appStore.svg',
+		dark: 'file:../nodes/AppStoreConnect/appStore.dark.svg',
+	} as const;
+
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Secret',

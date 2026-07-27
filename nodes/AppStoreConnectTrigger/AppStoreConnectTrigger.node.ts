@@ -130,9 +130,7 @@ export class AppStoreConnectTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'App Store Connect Trigger',
 		name: 'appStoreConnectTrigger',
-		// Uses the official App Store Connect PNG logo (intentionally not SVG).
-		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
-		icon: 'file:appStoreConnectTrigger.png',
+		icon: { light: 'file:appStore.svg', dark: 'file:appStore.dark.svg' },
 		group: ['trigger'],
 		version: 1,
 		subtitle:
