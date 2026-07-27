@@ -137,6 +137,10 @@ export class AppStoreConnectTrigger implements INodeType {
 		subtitle:
 			'={{ $parameter["manageWebhook"] ? ($parameter["events"] || []).join(", ") : "Passive listener" }}',
 		description: 'Starts the workflow when App Store Connect delivers a webhook event',
+		// A webhook trigger isn't really an AI tool, but the community-nodes
+		// scanner (node-usable-as-tool) requires the property to be present —
+		// "when in doubt set it to true".
+		usableAsTool: true,
 		defaults: {
 			name: 'App Store Connect Trigger',
 		},
