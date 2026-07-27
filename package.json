@@ -1,26 +1,29 @@
 {
   "name": "n8n-nodes-apple-appstore",
-  "version": "0.1.0",
-  "description": "n8n community nodes for the Apple App Store Connect API (webhooks).",
+  "version": "0.1.1",
+  "description": "n8n community nodes for the Apple App Store Connect API — TestFlight, builds, App Store versions, customer reviews, users, and webhooks.",
   "keywords": [
     "n8n-community-node-package",
     "n8n",
     "app-store-connect",
     "apple",
+    "appstore",
+    "testflight",
+    "ios",
     "webhooks"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/mortocks/n8n-nodes-app-store-connect",
+  "homepage": "https://github.com/mortocks/n8n-nodes-apple-appstore",
   "author": {
     "name": "Andrew Morton",
     "url": "https://github.com/mortocks"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mortocks/n8n-nodes-app-store-connect.git"
+    "url": "git+https://github.com/mortocks/n8n-nodes-apple-appstore.git"
   },
   "bugs": {
-    "url": "https://github.com/mortocks/n8n-nodes-app-store-connect/issues"
+    "url": "https://github.com/mortocks/n8n-nodes-apple-appstore/issues"
   },
   "engines": {
     "node": ">=20.15"
