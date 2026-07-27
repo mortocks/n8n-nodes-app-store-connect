@@ -75,23 +75,23 @@ describe('withAscErrorMapping', () => {
 		).rejects.toThrow(/first detail; .*second detail/);
 	});
 
-	it('re-throws the original error unchanged when the body is not an ASC error payload', async () => {
+	it('wraps a non-ASC error payload in a NodeApiError (fallback re-throw)', async () => {
 		const plain = new Error('socket hang up');
 
 		await expect(
 			withAscErrorMapping(ctx, async () => {
 				throw plain;
 			}),
-		).rejects.toBe(plain); // same instance — not wrapped in NodeApiError
+		).rejects.toBeInstanceOf(NodeApiError); // wrapped, not the raw instance
 	});
 
-	it('re-throws when there is a cause but no recognisable errors[] array', async () => {
+	it('wraps in a NodeApiError when there is a cause but no recognisable errors[] array', async () => {
 		const failure = ascFailure({ message: 'Bad Gateway' }); // no `errors` key
 
 		await expect(
 			withAscErrorMapping(ctx, async () => {
 				throw failure;
 			}),
-		).rejects.toBe(failure);
+		).rejects.toBeInstanceOf(NodeApiError);
 	});
 });
