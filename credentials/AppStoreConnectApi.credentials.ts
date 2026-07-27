@@ -39,8 +39,8 @@ export class AppStoreConnectApi implements ICredentialType {
 	documentationUrl = 'https://developer.apple.com/documentation/appstoreconnectapi';
 
 	icon = {
-		light: 'file:../nodes/AppStoreConnect/appStoreConnect.png',
-		dark: 'file:../nodes/AppStoreConnect/appStoreConnect.png',
+		light: 'file:../nodes/AppStoreConnect/appStore.svg',
+		dark: 'file:../nodes/AppStoreConnect/appStore.dark.svg',
 	} as const;
 
 	properties: INodeProperties[] = [

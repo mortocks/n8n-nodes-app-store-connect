@@ -47,9 +47,7 @@ export class AppStoreConnect implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'App Store Connect',
 		name: 'appStoreConnect',
-		// Uses the official App Store Connect PNG logo (intentionally not SVG).
-		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
-		icon: 'file:appStoreConnect.png',
+		icon: { light: 'file:appStore.svg', dark: 'file:appStore.dark.svg' },
 		group: ['input'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',

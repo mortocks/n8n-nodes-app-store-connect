@@ -27,9 +27,7 @@ export class VerifyWebhookSignature implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Verify Webhook Signature',
 		name: 'verifyWebhookSignature',
-		// Uses the official App Store Connect PNG logo (intentionally not SVG).
-		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
-		icon: 'file:verifyWebhookSignature.png',
+		icon: { light: 'file:appStore.svg', dark: 'file:appStore.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: 'Verify signature',
