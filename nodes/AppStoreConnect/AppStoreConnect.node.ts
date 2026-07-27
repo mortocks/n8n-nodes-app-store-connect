@@ -1,3 +1,4 @@
+import { NodeConnectionTypes } from 'n8n-workflow';
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 
 import { searchApps } from './methods/apps';
@@ -55,8 +56,13 @@ export class AppStoreConnect implements INodeType {
 		defaults: {
 			name: 'App Store Connect',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		// eslint-plugin-n8n-nodes-base@1.16.7 predates the `NodeConnectionTypes`
+		// rename and only recognises the `'main'` string literal; the n8n
+		// community-nodes verification scanner requires the typed enum instead.
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
+		inputs: [NodeConnectionTypes.Main],
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
+		outputs: [NodeConnectionTypes.Main],
 		usableAsTool: true,
 		credentials: [
 			{

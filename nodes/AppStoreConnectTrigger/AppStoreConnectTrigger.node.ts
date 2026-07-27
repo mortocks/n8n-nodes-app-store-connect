@@ -1,5 +1,6 @@
 import {
 	NodeApiError,
+	NodeConnectionTypes,
 	type IDataObject,
 	type IHookFunctions,
 	type IHttpRequestOptions,
@@ -140,7 +141,11 @@ export class AppStoreConnectTrigger implements INodeType {
 			name: 'App Store Connect Trigger',
 		},
 		inputs: [],
-		outputs: ['main'],
+		// eslint-plugin-n8n-nodes-base@1.16.7 predates the `NodeConnectionTypes`
+		// rename and only recognises the `'main'` string literal; the n8n
+		// community-nodes verification scanner requires the typed enum instead.
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'appStoreConnectApi',
