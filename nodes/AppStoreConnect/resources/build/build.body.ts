@@ -108,3 +108,29 @@ export async function attachBuildUpdateBody(
 	requestOptions.body = { data };
 	return requestOptions;
 }
+
+/**
+ * `preSend` hook shared by Add to Beta Group and Remove from Group.
+ *
+ * These are JSON:API *relationship-linkage* writes — `POST` (add / release a
+ * build to a group) or `DELETE` (remove) on
+ * `/v1/betaGroups/{groupId}/relationships/builds` — whose body is a to-many
+ * linkage: `{ data: [ { type: "builds", id } ] }` (an *array* of resource
+ * identifiers, not a full resource object). The group id lives in the URL
+ * (`betaGroup` picker); the build id (`buildId`) becomes the sole linkage entry.
+ * Unlike Update these carry no typed attributes, so they do not use the Input
+ * Mode escape hatch — the linkage shape is fixed. This mirrors the beta-tester
+ * group-linkage hook (`attachBetaTesterGroupLinkage`); it is the operation used
+ * to release a finished build to a TestFlight beta group.
+ */
+export async function attachBuildGroupLinkage(
+	this: IExecuteSingleFunctions,
+	requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const buildId = this.getNodeParameter('buildId') as string;
+
+	requestOptions.body = {
+		data: [{ type: BUILD_RESOURCE_TYPE, id: buildId }],
+	};
+	return requestOptions;
+}

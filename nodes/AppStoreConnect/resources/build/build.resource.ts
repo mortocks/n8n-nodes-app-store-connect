@@ -1,12 +1,14 @@
 import type { INodeProperties } from 'n8n-workflow';
 
+import { targetAppLocator } from '../_shared/appLocator';
+import { betaGroupLocator } from '../_shared/betaGroupLocator';
 import { inputModeFields } from '../_shared/inputMode';
 import { attachSort, sortField, TRISTATE_OPTIONS } from '../_shared/listFilters';
 import { attachQueryOptions, queryOptionsCollection } from '../_shared/queryOptions';
 import { simplifyField } from '../_shared/simplify';
 import { ascCursorPagination } from '../../transport/pagination';
-import { ascSingleRequest } from '../../transport/request';
-import { attachBuildFilters, attachBuildUpdateBody } from './build.body';
+import { ascConfirmationRequest, ascSingleRequest } from '../../transport/request';
+import { attachBuildFilters, attachBuildGroupLinkage, attachBuildUpdateBody } from './build.body';
 
 /**
  * Builds resource — operations (roadmap Tier 1 #2).
@@ -23,6 +25,12 @@ import { attachBuildFilters, attachBuildUpdateBody } from './build.body';
  *     `ascSingleRequest`.
  *   - **Update** (`PATCH /v1/builds/{id}`) — expire a build /
  *     set `usesNonExemptEncryption`, via `attachBuildUpdateBody`.
+ *   - **Add to Beta Group** / **Remove from Group** — JSON:API
+ *     relationship-linkage writes: `POST` / `DELETE
+ *     /v1/betaGroups/{id}/relationships/builds`, body built by
+ *     `attachBuildGroupLinkage`. Add is the "release a finished build to a
+ *     TestFlight beta group" step (pair it with the trigger's
+ *     `BUILD_UPLOAD_STATE_UPDATED` event and a `processingState = VALID` gate).
  *
  * Every read mounts the shared Query Options collection (`attachQueryOptions`
  * folds sparse fieldsets / include / filter / sort / limit into `qs`). The
@@ -115,6 +123,46 @@ export const buildOperations: INodeProperties[] = [
 					},
 					operations: {
 						pagination: ascSingleRequest,
+					},
+				},
+			},
+			{
+				name: 'Add to Beta Group',
+				value: 'addToGroup',
+				action: 'Add a build to a beta group',
+				description: 'Release a build to a TestFlight beta group',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '=/v1/betaGroups/{{$parameter["betaGroup"]}}/relationships/builds',
+					},
+					send: {
+						preSend: [attachBuildGroupLinkage],
+					},
+					operations: {
+						// Relationship write replies 204 No Content; emit an explicit
+						// `{ added: true }` confirmation rather than an empty item.
+						pagination: ascConfirmationRequest('added'),
+					},
+				},
+			},
+			{
+				name: 'Remove From Group',
+				value: 'removeFromGroup',
+				action: 'Remove a build from a beta group',
+				description: 'Unlink a build from a TestFlight beta group',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '=/v1/betaGroups/{{$parameter["betaGroup"]}}/relationships/builds',
+					},
+					send: {
+						preSend: [attachBuildGroupLinkage],
+					},
+					operations: {
+						// Relationship write replies 204 No Content; emit an explicit
+						// `{ removed: true }` confirmation rather than an empty item.
+						pagination: ascConfirmationRequest('removed'),
 					},
 				},
 			},
@@ -277,9 +325,10 @@ export const buildFields: INodeProperties[] = [
 		],
 	),
 
-	// --- Get / Get Beta Detail / Update: which build -------------------------
-	// Used both in the request URL and (for Update) echoed into `data.id`, so it
-	// shows regardless of Input Mode.
+	// --- Get / Get Beta Detail / Update / Add to Group / Remove from Group ----
+	// Which build. Used in the request URL (Get/Get Beta Detail/Update), echoed
+	// into `data.id` (Update), and used as the linkage entry (Add/Remove from
+	// Group), so it shows regardless of Input Mode.
 	{
 		displayName: 'Build ID',
 		name: 'buildId',
@@ -291,10 +340,32 @@ export const buildFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['build'],
-				operation: ['get', 'getBetaDetail', 'update'],
+				operation: ['get', 'getBetaDetail', 'update', 'addToGroup', 'removeFromGroup'],
 			},
 		},
 	},
+
+	// --- Add to Group / Remove from Group: optional app scope + which group ---
+	// `targetApp` only narrows the "From List" beta-group picker below; the group
+	// id is what actually goes into the URL.
+	targetAppLocator(
+		{
+			show: {
+				resource: ['build'],
+				operation: ['addToGroup', 'removeFromGroup'],
+			},
+		},
+		{ description: 'Narrows the "From List" beta-group picker below to a single app' },
+	),
+	betaGroupLocator(
+		{
+			show: {
+				resource: ['build'],
+				operation: ['addToGroup', 'removeFromGroup'],
+			},
+		},
+		{ required: true, description: 'The beta group to add the build to or remove it from' },
+	),
 
 	// --- Update: Input Mode toggle + raw JSON body ---------------------------
 	...inputModeFields({
