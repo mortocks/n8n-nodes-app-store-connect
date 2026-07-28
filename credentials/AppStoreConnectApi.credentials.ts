@@ -1,15 +1,12 @@
 import type {
 	IAuthenticate,
 	ICredentialDataDecryptedObject,
-	ICredentialTestRequest,
 	ICredentialType,
 	IHttpRequestOptions,
 	INodeProperties,
 } from 'n8n-workflow';
 
 import { signAscToken, type AscKeyType } from '../utils/ascToken';
-
-const ASC_BASE_URL = 'https://api.appstoreconnect.apple.com';
 
 /**
  * `App Store Connect API` credential — Team and Individual keys.
@@ -116,15 +113,12 @@ export class AppStoreConnectApi implements ICredentialType {
 		return requestOptions;
 	};
 
-	// Because `authenticate` (above) attaches the bearer on every request, the
-	// declarative test works: n8n applies `authenticate` to this request too.
-	test: ICredentialTestRequest = {
-		request: {
-			baseURL: ASC_BASE_URL,
-			url: '/v1/apps',
-			qs: {
-				limit: 1,
-			},
-		},
-	};
+	// The credential is tested by a code-based `credentialTest` on the nodes that
+	// use it (`testApiCredential` in `utils/apiCredentialTest.ts`, wired via each
+	// node's `credentials[].testedBy`). A code test — rather than the declarative
+	// `test` request — lets us translate Apple's response into an actionable
+	// message: 401 (bad Key ID / inactive key / wrong Issuer ID) vs 403
+	// (authenticated, but the account has unsigned agreements or the key's role
+	// lacks access). The declarative test could only ever say "Authorization
+	// failed", which hid that distinction.
 }

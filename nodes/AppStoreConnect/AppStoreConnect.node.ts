@@ -1,6 +1,7 @@
 import { NodeConnectionTypes } from 'n8n-workflow';
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 
+import { testApiCredential } from '../../utils/apiCredentialTest';
 import { searchApps } from './methods/apps';
 import { searchBetaGroups } from './methods/betaGroups';
 import { getUserRoles } from './methods/roles';
@@ -26,6 +27,7 @@ import {
 	userInvitationOperations,
 } from './resources/userInvitation/userInvitation.resource';
 import { webhookFields, webhookOperations } from './resources/webhook/webhook.resource';
+import { enablePaginationRouting } from './transport/enablePagination';
 
 /**
  * `App Store Connect` action node (declarative).
@@ -68,6 +70,12 @@ export class AppStoreConnect implements INodeType {
 			{
 				name: 'appStoreConnectApi',
 				required: true,
+				// Code-based test (see `methods.credentialTest` below) so a failing
+				// key reports Apple's real reason — 401 (bad key/ID) vs 403
+				// (authenticated but agreements/role) — instead of a generic
+				// "Authorization failed". Every node using this credential must
+				// declare `testedBy` for the scanner's `credential-test-required` rule.
+				testedBy: 'appStoreConnectApiTest',
 			},
 		],
 		requestDefaults: {
@@ -126,25 +134,29 @@ export class AppStoreConnect implements INodeType {
 				],
 				default: 'webhook',
 			},
-			...appOperations,
+			// Each resource's operations are passed through `enablePaginationRouting`
+			// so n8n actually invokes our shared `operations.pagination` request
+			// hooks (it only does so when `send.paginate` is also set). See
+			// `transport/enablePagination.ts`. Fields are spread as-is.
+			...enablePaginationRouting(appOperations),
 			...appFields,
-			...appStoreVersionOperations,
+			...enablePaginationRouting(appStoreVersionOperations),
 			...appStoreVersionFields,
-			...webhookOperations,
+			...enablePaginationRouting(webhookOperations),
 			...webhookFields,
-			...customerReviewOperations,
+			...enablePaginationRouting(customerReviewOperations),
 			...customerReviewFields,
-			...buildOperations,
+			...enablePaginationRouting(buildOperations),
 			...buildFields,
-			...betaGroupOperations,
+			...enablePaginationRouting(betaGroupOperations),
 			...betaGroupFields,
-			...betaTesterOperations,
+			...enablePaginationRouting(betaTesterOperations),
 			...betaTesterFields,
-			...betaFeedbackOperations,
+			...enablePaginationRouting(betaFeedbackOperations),
 			...betaFeedbackFields,
-			...userOperations,
+			...enablePaginationRouting(userOperations),
 			...userFields,
-			...userInvitationOperations,
+			...enablePaginationRouting(userInvitationOperations),
 			...userInvitationFields,
 		],
 	};
@@ -161,6 +173,9 @@ export class AppStoreConnect implements INodeType {
 		},
 		loadOptions: {
 			getUserRoles,
+		},
+		credentialTest: {
+			appStoreConnectApiTest: testApiCredential,
 		},
 	};
 }

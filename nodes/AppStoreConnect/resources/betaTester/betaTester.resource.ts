@@ -1,6 +1,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 
 import { targetAppLocator } from '../_shared/appLocator';
+import { betaGroupLocator } from '../_shared/betaGroupLocator';
 import { inputModeFields } from '../_shared/inputMode';
 import { attachSort, sortField } from '../_shared/listFilters';
 import { attachQueryOptions, queryOptionsCollection } from '../_shared/queryOptions';
@@ -165,38 +166,6 @@ export const betaTesterOperations: INodeProperties[] = [
 	},
 ];
 
-/** Reusable "Beta Group" resourceLocator (From List → `searchBetaGroups`, or ID). */
-const betaGroupLocator = (
-	displayOptions: INodeProperties['displayOptions'],
-	required: boolean,
-	description: string,
-): INodeProperties => ({
-	displayName: 'Beta Group',
-	name: 'betaGroup',
-	type: 'resourceLocator',
-	default: { mode: 'list', value: '' },
-	required,
-	description,
-	displayOptions,
-	modes: [
-		{
-			displayName: 'From List',
-			name: 'list',
-			type: 'list',
-			typeOptions: {
-				searchListMethod: 'searchBetaGroups',
-				searchable: true,
-			},
-		},
-		{
-			displayName: 'ID',
-			name: 'id',
-			type: 'string',
-			placeholder: 'e.g. 12a34b56-...',
-		},
-	],
-});
-
 /**
  * Beta Testers resource — fields.
  */
@@ -271,8 +240,7 @@ export const betaTesterFields: INodeProperties[] = [
 				operation: ['getMany'],
 			},
 		},
-		false,
-		'Only return testers in this beta group (sent as `filter[betaGroups]`)',
+		{ description: 'Only return testers in this beta group (sent as `filter[betaGroups]`)' },
 	),
 	{
 		displayName: 'Email',
@@ -388,8 +356,7 @@ export const betaTesterFields: INodeProperties[] = [
 				operation: ['addToGroup', 'removeFromGroup'],
 			},
 		},
-		true,
-		'The beta group to add the tester to or remove them from',
+		{ required: true, description: 'The beta group to add the tester to or remove them from' },
 	),
 
 	// --- Create: Input Mode toggle + raw JSON body ---------------------------
@@ -423,8 +390,7 @@ export const betaTesterFields: INodeProperties[] = [
 				inputMode: ['fields'],
 			},
 		},
-		true,
-		'The beta group to invite the new tester into',
+		{ required: true, description: 'The beta group to invite the new tester into' },
 	),
 
 	// --- Create: typed attributes (hidden in JSON mode) ----------------------

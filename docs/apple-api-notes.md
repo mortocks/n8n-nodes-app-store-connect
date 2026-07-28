@@ -17,12 +17,39 @@ Mint a short-lived ES256 JWT per the ASC API rules.
   specifies ~19 min. Use `iat = now`, `exp = now + 19*60`. n8n caches the token
   and re-mints via `preAuthentication` when it expires.
 - **Team keys:** include `iss` = the team Issuer ID (a UUID). Do **not** set `sub`.
+  Team Key IDs are **10 characters**.
 - **Individual keys** (PRD open item #2, resolved): **omit `iss`**, and set
-  `sub` = `"user"`. Everything else (header, `aud`, `exp`) is identical.
+  `sub` = `"user"`. Everything else (header, `aud`, `exp`) is identical. This is
+  byte-for-byte what fastlane's spaceship `token.rb` does. ✅ CONFIRMED live
+  2026-07-28.
 - The `.p8` file is an EC P-256 private key in PKCS#8 PEM. Sign with it.
 
-Sources: fastlane ASC API docs; Apple Developer forums thread 770227
-("JWT Fails with Individual Key"); multiple JWT-generation guides.
+⚠️ **Individual key gotchas — confirmed live against a real ASC account
+(2026-07-28):**
+
+- **Individual Key IDs are ~12 characters, not 10.** Entering a 10-char (team)
+  ID as an Individual key ⇒ `401 NOT_AUTHORIZED` (Apple can't match the key).
+  The `.p8` filename encodes the ID: `AuthKey_<KeyID>.p8`.
+- A correctly-configured Individual key **authenticates** but then hits a
+  business-layer `403 FORBIDDEN.REQUIRED_AGREEMENTS_MISSING_OR_EXPIRED` on
+  `/v1/apps` and `/v1/users` until the key's user (and/or the Account Holder)
+  signs the pending agreements in App Store Connect. A Team/Admin key on the
+  same account returns 200, because the gate is on the *individual user's*
+  agreement acceptance.
+- Individual keys **cannot** use provisioning endpoints (`/v1/certificates`,
+  `/v1/bundleIds`, profiles) — those return `401` by Apple's design. Also no
+  sales/finance or notaryTool. Use a Team key for provisioning.
+- Because 401 (bad key) and 403 (authenticated, agreements/role) are so
+  different in cause, the credential is tested by a **code-based** `credentialTest`
+  (`utils/apiCredentialTest.ts`) that surfaces Apple's real `errors[]` message
+  rather than n8n's generic "Authorization failed".
+- `normalizePem` (`utils/ascToken.ts`) tolerates keys pasted with real newlines,
+  no newlines, CRLF, literal `\n`/`\r`/`\t` escapes (copied from JSON/`.env`),
+  or surrounding quotes — the literal-`\n` case previously caused
+  `DECODER routines::unsupported`.
+
+Sources: fastlane spaceship `connect_api/token.rb` (reference implementation);
+fastlane ASC API docs; Apple Developer forums thread 770227; live testing.
 
 ## Webhook signature verification (module B `verifyWebhookSignature`) — PRD open item #1, resolved
 

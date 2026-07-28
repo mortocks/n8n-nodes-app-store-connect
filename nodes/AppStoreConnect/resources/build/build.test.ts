@@ -14,7 +14,7 @@ import { attachSort } from '../_shared/listFilters';
 import { attachQueryOptions } from '../_shared/queryOptions';
 import { ascCursorPagination } from '../../transport/pagination';
 import { ascSingleRequest } from '../../transport/request';
-import { attachBuildFilters, attachBuildUpdateBody } from './build.body';
+import { attachBuildFilters, attachBuildGroupLinkage, attachBuildUpdateBody } from './build.body';
 import {
 	BUILD_BETA_DETAIL_RESOURCE_TYPE,
 	BUILD_PROCESSING_STATES,
@@ -231,6 +231,23 @@ describe('attachBuildUpdateBody', () => {
 	});
 });
 
+describe('attachBuildGroupLinkage (Add / Remove from Beta Group)', () => {
+	it('builds a JSON:API to-many linkage body from the build id', async () => {
+		const ctx = makeCtx({ betaGroup: 'g-1', buildId: 'b-9' });
+
+		const result = await attachBuildGroupLinkage.call(ctx, {
+			method: 'POST',
+			url: '/v1/betaGroups/g-1/relationships/builds',
+		} as IHttpRequestOptions);
+
+		// The linkage `data` is an ARRAY of resource identifiers (to-many), not a
+		// single resource object; the build id is the sole entry.
+		expect(result.body).toEqual({
+			data: [{ type: BUILD_RESOURCE_TYPE, id: 'b-9' }],
+		});
+	});
+});
+
 describe('build operation wiring', () => {
 	it('Get Many is a top-level cursor-paginated read with filter + query hooks', () => {
 		const routing = op('getMany').routing;
@@ -261,6 +278,62 @@ describe('build operation wiring', () => {
 		expect(routing.request.url).toBe('=/v1/builds/{{$parameter["buildId"]}}');
 		expect(routing.operations.pagination).toBe(ascSingleRequest);
 		expect(routing.send.preSend).toContain(attachBuildUpdateBody);
+	});
+
+	it('Add to Beta Group POSTs the linkage and confirms with { added: true }', async () => {
+		const option = op('addToGroup');
+		expect(option.name).toBe('Add to Beta Group');
+		const routing = option.routing;
+		expect(routing.request.method).toBe('POST');
+		expect(routing.request.url).toBe(
+			'=/v1/betaGroups/{{$parameter["betaGroup"]}}/relationships/builds',
+		);
+		expect(routing.send.preSend).toContain(attachBuildGroupLinkage);
+
+		// Relationship write replies 204 No Content; the confirmation hook emits
+		// an explicit `{ added: true }` item rather than n8n's empty body.
+		const makeRoutingRequest = jest.fn(async () => [] as INodeExecutionData[]);
+		const ctx = {
+			makeRoutingRequest,
+			getNode: () => FAKE_NODE,
+		} as unknown as IExecutePaginationFunctions;
+
+		const result = await routing.operations.pagination.call(
+			ctx,
+			{
+				options: { url: '/v1/betaGroups/g-1/relationships/builds' },
+			} as unknown as DeclarativeRestApiSettings.ResultOptions,
+		);
+
+		expect(makeRoutingRequest).toHaveBeenCalledTimes(1);
+		expect(result).toEqual([{ json: { added: true } }]);
+	});
+
+	it('Remove From Group DELETEs the linkage and confirms with { removed: true }', async () => {
+		const option = op('removeFromGroup');
+		expect(option.name).toBe('Remove From Group');
+		const routing = option.routing;
+		expect(routing.request.method).toBe('DELETE');
+		expect(routing.request.url).toBe(
+			'=/v1/betaGroups/{{$parameter["betaGroup"]}}/relationships/builds',
+		);
+		expect(routing.send.preSend).toContain(attachBuildGroupLinkage);
+
+		const makeRoutingRequest = jest.fn(async () => [] as INodeExecutionData[]);
+		const ctx = {
+			makeRoutingRequest,
+			getNode: () => FAKE_NODE,
+		} as unknown as IExecutePaginationFunctions;
+
+		const result = await routing.operations.pagination.call(
+			ctx,
+			{
+				options: { url: '/v1/betaGroups/g-1/relationships/builds' },
+			} as unknown as DeclarativeRestApiSettings.ResultOptions,
+		);
+
+		expect(makeRoutingRequest).toHaveBeenCalledTimes(1);
+		expect(result).toEqual([{ json: { removed: true } }]);
 	});
 });
 
