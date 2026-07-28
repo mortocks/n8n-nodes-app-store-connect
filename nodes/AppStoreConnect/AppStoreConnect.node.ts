@@ -27,6 +27,7 @@ import {
 	userInvitationOperations,
 } from './resources/userInvitation/userInvitation.resource';
 import { webhookFields, webhookOperations } from './resources/webhook/webhook.resource';
+import { enablePaginationRouting } from './transport/enablePagination';
 
 /**
  * `App Store Connect` action node (declarative).
@@ -133,25 +134,29 @@ export class AppStoreConnect implements INodeType {
 				],
 				default: 'webhook',
 			},
-			...appOperations,
+			// Each resource's operations are passed through `enablePaginationRouting`
+			// so n8n actually invokes our shared `operations.pagination` request
+			// hooks (it only does so when `send.paginate` is also set). See
+			// `transport/enablePagination.ts`. Fields are spread as-is.
+			...enablePaginationRouting(appOperations),
 			...appFields,
-			...appStoreVersionOperations,
+			...enablePaginationRouting(appStoreVersionOperations),
 			...appStoreVersionFields,
-			...webhookOperations,
+			...enablePaginationRouting(webhookOperations),
 			...webhookFields,
-			...customerReviewOperations,
+			...enablePaginationRouting(customerReviewOperations),
 			...customerReviewFields,
-			...buildOperations,
+			...enablePaginationRouting(buildOperations),
 			...buildFields,
-			...betaGroupOperations,
+			...enablePaginationRouting(betaGroupOperations),
 			...betaGroupFields,
-			...betaTesterOperations,
+			...enablePaginationRouting(betaTesterOperations),
 			...betaTesterFields,
-			...betaFeedbackOperations,
+			...enablePaginationRouting(betaFeedbackOperations),
 			...betaFeedbackFields,
-			...userOperations,
+			...enablePaginationRouting(userOperations),
 			...userFields,
-			...userInvitationOperations,
+			...enablePaginationRouting(userInvitationOperations),
 			...userInvitationFields,
 		],
 	};

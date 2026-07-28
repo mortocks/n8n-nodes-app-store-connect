@@ -194,6 +194,36 @@ describe('AppStoreConnect resource dropdown', () => {
 	});
 });
 
+describe('AppStoreConnect pagination routing', () => {
+	const props = walkProps(new AppStoreConnect().description.properties);
+
+	// n8n only invokes an operation's `operations.pagination` hook when
+	// `send.paginate` is also truthy. Every ASC operation relies on that hook
+	// (error mapping, Simplify, cursor paging, 204 confirmations), so the two
+	// MUST be paired — otherwise the hook is dead code and a 204 write emits
+	// `[""]`. `enablePaginationRouting` stamps the switch on; this locks it in so
+	// a new operation can't silently regress.
+	it('pairs every operations.pagination hook with send.paginate = true', () => {
+		const offenders: unknown[] = [];
+		for (const p of props.filter((x) => x.name === 'operation' && x.type === 'options')) {
+			for (const o of (p.options ?? []) as Array<
+				INodePropertyOptions & {
+					routing?: {
+						operations?: { pagination?: unknown };
+						send?: { paginate?: unknown };
+					};
+				}
+			>) {
+				const routing = o.routing;
+				if (routing?.operations?.pagination && routing?.send?.paginate !== true) {
+					offenders.push({ operation: o.value });
+				}
+			}
+		}
+		expect(offenders).toEqual([]);
+	});
+});
+
 describe.each(CREDENTIALS)('credential conformance: $label', ({ cred }) => {
 	it('has a camelCase name, Title-Case displayName, and properties', () => {
 		expect(cred.name).toMatch(/^[a-z][a-zA-Z0-9]*$/);
