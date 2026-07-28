@@ -11,6 +11,7 @@ import {
 	type JsonObject,
 } from 'n8n-workflow';
 
+import { testApiCredential } from '../../utils/apiCredentialTest';
 import { formatAscErrorMessage } from '../../utils/ascErrorMapper';
 import { KNOWN_EVENT_TYPES, mergeEventTypes } from '../../utils/eventTypes';
 import { paginate } from '../../utils/pagination';
@@ -157,6 +158,10 @@ export class AppStoreConnectTrigger implements INodeType {
 				// Only needed when the Trigger manages the ASC registration itself;
 				// a passive listener makes no ASC API calls.
 				required: true,
+				// Same code-based test as the action node, so a bad key here also
+				// reports Apple's real reason. Every node using this credential must
+				// declare `testedBy` for the scanner's `credential-test-required` rule.
+				testedBy: 'appStoreConnectApiTest',
 				displayOptions: {
 					show: {
 						manageWebhook: [true],
@@ -317,6 +322,7 @@ export class AppStoreConnectTrigger implements INodeType {
 		// Shared with the Verify node so both nodes that use the webhook
 		// credential test it (scanner `credential-test-required`).
 		credentialTest: {
+			appStoreConnectApiTest: testApiCredential,
 			appStoreConnectWebhookApiTest: testWebhookSecret,
 		},
 	};

@@ -1,6 +1,7 @@
 import { NodeConnectionTypes } from 'n8n-workflow';
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 
+import { testApiCredential } from '../../utils/apiCredentialTest';
 import { searchApps } from './methods/apps';
 import { searchBetaGroups } from './methods/betaGroups';
 import { getUserRoles } from './methods/roles';
@@ -68,6 +69,12 @@ export class AppStoreConnect implements INodeType {
 			{
 				name: 'appStoreConnectApi',
 				required: true,
+				// Code-based test (see `methods.credentialTest` below) so a failing
+				// key reports Apple's real reason — 401 (bad key/ID) vs 403
+				// (authenticated but agreements/role) — instead of a generic
+				// "Authorization failed". Every node using this credential must
+				// declare `testedBy` for the scanner's `credential-test-required` rule.
+				testedBy: 'appStoreConnectApiTest',
 			},
 		],
 		requestDefaults: {
@@ -161,6 +168,9 @@ export class AppStoreConnect implements INodeType {
 		},
 		loadOptions: {
 			getUserRoles,
+		},
+		credentialTest: {
+			appStoreConnectApiTest: testApiCredential,
 		},
 	};
 }

@@ -69,14 +69,23 @@ function base64UrlEncode(input: Buffer | string): string {
 }
 
 /**
- * Normalize a PEM private key. Apple's `.p8` is a PEM whose body must be split
- * across newline-delimited lines, but pasting it into a single-line form field
- * (or through clipboards that strip newlines) commonly collapses it to one line
- * like `-----BEGIN PRIVATE KEY-----MHcC…-----END PRIVATE KEY-----`, which
- * OpenSSL cannot decode. If we can see the BEGIN/END markers, rebuild a
- * canonical PEM: take the base64 body between them, strip all whitespace, and
- * re-wrap at 64 characters. Idempotent for already-valid keys; left untouched
- * if the markers aren't present.
+ * Normalize a PEM private key so a user can paste the `.p8` in whatever shape
+ * their clipboard produced it. Apple's `.p8` is a PEM whose body must be split
+ * across newline-delimited lines, but real-world pastes mangle it several ways:
+ *
+ *  - a single-line form field (or clipboard) strips the newlines, collapsing it
+ *    to `-----BEGIN PRIVATE KEY-----MHcC…-----END PRIVATE KEY-----`;
+ *  - copying from a JSON string, a `.env`, or a CI secret yields *literal*
+ *    backslash-`n` escapes (`…KEY-----\nMHcC…`) rather than real newlines —
+ *    OpenSSL then reports `DECODER routines::unsupported` because the stray `n`
+ *    characters corrupt the base64 body (real whitespace-stripping misses them);
+ *  - the whole thing arrives wrapped in surrounding quotes.
+ *
+ * If we can see the BEGIN/END markers, rebuild a canonical PEM: take everything
+ * between them, drop literal `\n`/`\r`/`\t` escape sequences, keep only the
+ * base64 alphabet (which discards real whitespace, quotes and stray
+ * punctuation), and re-wrap at 64 characters. Idempotent for already-valid
+ * keys; left untouched if the markers aren't present.
  */
 function normalizePem(pem: string): string {
 	const match = pem.match(/-----BEGIN ([^-]+)-----([\s\S]*?)-----END \1-----/);
@@ -84,7 +93,14 @@ function normalizePem(pem: string): string {
 		return pem;
 	}
 	const label = match[1].trim();
-	const body = match[2].replace(/\s+/g, '');
+	const body = match[2]
+		// Literal JSON/`.env`-style escape sequences (backslash + letter), before
+		// the base64 filter below — otherwise the letter (`n`, `r`, `t`) survives
+		// as bogus base64 and breaks decoding.
+		.replace(/\\[nrt]/g, '')
+		// Keep only the base64 alphabet: drops real whitespace, wrapping quotes
+		// and any other stray characters a paste may have introduced.
+		.replace(/[^A-Za-z0-9+/=]/g, '');
 	const wrapped = body.match(/.{1,64}/g)?.join('\n') ?? body;
 	return `-----BEGIN ${label}-----\n${wrapped}\n-----END ${label}-----\n`;
 }

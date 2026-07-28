@@ -101,6 +101,36 @@ describe('signAscToken', () => {
 		).toBe(true);
 	});
 
+	it('accepts a PEM whose newlines became literal \\n escapes (copied from JSON/.env)', () => {
+		// Pasting a key out of a JSON string, a `.env`, or a CI secret turns the
+		// real newlines into literal backslash-n text. OpenSSL then reports
+		// `DECODER routines::unsupported` unless we strip those escapes.
+		const escaped = privateKeyPem.replace(/\r?\n/g, '\\n');
+		expect(escaped).toContain('\\n');
+		expect(escaped).not.toContain('\n');
+		const token = signAscToken({ ...teamParams, privateKey: escaped });
+		const { signingInput, signature } = decodeJwt(token);
+		const verifier = createVerify('SHA256');
+		verifier.update(signingInput);
+		verifier.end();
+		expect(
+			verifier.verify({ key: publicKeyPem, dsaEncoding: 'ieee-p1363' }, signature),
+		).toBe(true);
+	});
+
+	it('accepts a PEM wrapped in surrounding quotes with literal \\n escapes', () => {
+		// The env-var shape: `"-----BEGIN…\n…\n-----END…-----\n"`, quotes and all.
+		const quoted = `"${privateKeyPem.replace(/\r?\n/g, '\\n')}"`;
+		const token = signAscToken({ ...teamParams, privateKey: quoted });
+		const { signingInput, signature } = decodeJwt(token);
+		const verifier = createVerify('SHA256');
+		verifier.update(signingInput);
+		verifier.end();
+		expect(
+			verifier.verify({ key: publicKeyPem, dsaEncoding: 'ieee-p1363' }, signature),
+		).toBe(true);
+	});
+
 	it('does not verify against an unrelated public key', () => {
 		const other = makeKeyPair();
 		const { signingInput, signature } = decodeJwt(signAscToken(teamParams));
